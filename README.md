@@ -1,6 +1,6 @@
-# ExoBot - Multi-purpose Discord Bot (Personal Project) 
+# ExoBot (Personal Project) 
 
-ExoBot is an open-source discord bot, and it's aim is to provide the necessary tools (and making them customisable) for both server users and administrators.
+ExoBot is an open-source discord bot, and it's aim is to provide the essential as well as customisable tools that can be used on any server by both users and administrators.
 
 ## 💡 Current Features
 
@@ -8,15 +8,29 @@ ExoBot is an open-source discord bot, and it's aim is to provide the necessary t
   -  Ranking System (MySQL)
 
 
-## Technologies
+## Installation
+
+```
+git clone https://github.com/imexotic/ExoBot.git
+
+source bot-env/bin/activate
+
+pip install -r requirements.txt
+
+python3 main.py
+```
+
+## 🖥️  Technologies
 These technologies are required to run the bot.
   
-  -  [Python 3.10](https://www.python.org/downloads/)
-  
+-  [Python 3.10](https://www.python.org/downloads/)
+-  [Project Packages](https://github.com/imexotic/ExoBot/blob/main/requirements.txt)
 
-The required python packages can be found in the [requirements](https://github.com/imexotic/ExoBot/blob/main/requirements.txt).
 
-### Installing the packages 
 
-`pip install -r requirements.txt`
+## 📝  License
+
+[MIT License](https://github.com/imexotic/ExoBot/blob/main/LICENSE)
+
+Copyright (c) 2022-present imexotic
 
