@@ -1,9 +1,8 @@
-import json
+import exobot
 import discord
 from discord.ext import commands
 from dotenv import dotenv_values
 
-import exobot
 
 print(f"""
     ,------. ,--.   ,--.  ,-----.  ,-----.    ,-----.  ,--------. 
@@ -22,7 +21,7 @@ print(f"""
 env_config = dotenv_values(".env")
 
 
-# Initialising the bot with the intents
+# Setting up intents
 
 intents = discord.Intents.default()
 intents.members = True
@@ -39,9 +38,10 @@ def init():
         # Loading cogs
 
         exobot.cogs.general.setup(bot)
+        exobot.cogs.ranking.setup(bot)
 
     bot.run(env_config['DISCORD_TOKEN'])
 
 if __name__ == '__main__':
 
-    init()
+    init() # Initialising the bot
