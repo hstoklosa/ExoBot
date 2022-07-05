@@ -16,6 +16,7 @@ print(f"""
 """)
 
 
+
 # Loading configs (env & bot)
 
 env_config = dotenv_values(".env")
