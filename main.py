@@ -1,3 +1,4 @@
+import json
 import discord
 from discord.ext import commands
 from dotenv import dotenv_values
@@ -16,8 +17,7 @@ print(f"""
 """)
 
 
-
-# Loading configs (env & bot)
+# Loading env config
 
 env_config = dotenv_values(".env")
 
@@ -27,14 +27,14 @@ env_config = dotenv_values(".env")
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot('$', intents=intents)
+bot = commands.Bot(exobot.config['COMMAND_PREFIX'], intents=intents)
 
 
 def init():
 
     @bot.event
     async def on_ready():
-        print('Logged on as {0}!'.format(bot.user))
+        print(f'Logged on as {bot.user}!')
 
         # Loading cogs
 
