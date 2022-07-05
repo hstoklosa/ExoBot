@@ -1,5 +1,8 @@
 import discord
 from discord.ext import commands
+from dotenv import dotenv_values
+
+import exobot
 
 print(f"""
     ,------. ,--.   ,--.  ,-----.  ,-----.    ,-----.  ,--------. 
@@ -12,6 +15,10 @@ print(f"""
     Powered by discord.py
 """)
 
+
+env_config = dotenv_values(".env")
+
+
 intents = discord.Intents.default()
 intents.members = True
 
@@ -21,5 +28,7 @@ bot = commands.Bot('$', intents=intents)
 async def on_ready():
     print('Logged on as {0}!'.format(bot.user))
 
+    exobot.cogs.general.setup(bot)
+
 if __name__ == '__main__':
-    bot.run()
+    bot.run(env_config['DISCORD_TOKEN'])
