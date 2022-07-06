@@ -6,7 +6,9 @@ ExoBot is an open-source discord bot, and it's aim is to provide the essential a
 
   -  Welcome/Join Message
   -  Ranking System (MySQL)
+  -  Poll System (MySQL)
 
+**Slash Commands** coming soon.
 
 ## Installation
 
