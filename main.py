@@ -25,6 +25,7 @@ env_config = dotenv_values(".env")
 
 intents = discord.Intents.default()
 intents.members = True
+intents.reactions = True
 
 bot = commands.Bot(exobot.config['COMMAND_PREFIX'], intents=intents)
 
@@ -36,9 +37,9 @@ def init():
         print(f'Logged on as {bot.user}!')
 
         # Loading cogs
-
         exobot.cogs.general.setup(bot)
         exobot.cogs.ranking.setup(bot)
+        exobot.cogs.polls.setup(bot)
 
     bot.run(env_config['DISCORD_TOKEN'])
 
