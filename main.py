@@ -47,6 +47,28 @@ async def on_ready():
     exobot.cogs.ranking.setup(bot)
     exobot.cogs.polls.setup(bot)
     exobot.cogs.music.setup(bot)
+    exobot.cogs.roles.setup(bot)
+
+    # Loading roles channel
+    roles_channel = bot.get_channel(exobot.config['ROLES_CHANNEL'])
+    roles = exobot.config['roles']
+
+    # NOTE:
+    # Loading each category with its roles
+    # Set-up roles and custom emojis on your discord sevrer
+    # Configure config.json by creating categories and lisitng each role e.g.: "category" -> "role_name": "emoji_name" 
+
+    for category, roles in roles.items():
+        msg_category = await roles_channel.send(f"Category: **{category}**")
+
+        for _, emoji in roles.items():
+            emoji_obj = discord.utils.get(roles_channel.guild.emojis, name=emoji)
+
+            if emoji_obj is None:
+                continue
+
+            await msg_category.add_reaction(emoji_obj)
+
 
 
 # Initialising the bot
@@ -55,6 +77,6 @@ if __name__ == '__main__':
     try:
         bot.run(env_config['DISCORD_TOKEN'])
     except Exception as e:
-        print("Failed to connect with the Discord API. Please check your discord token.")
+        print("Error: Failed to connect with the Discord API. Please check your discord token!")
         exit(1)
 

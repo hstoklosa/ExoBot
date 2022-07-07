@@ -14,7 +14,11 @@ ExoBot is an open-source discord bot, and it's aim is to provide the essential a
 ## Installation
 
 ```
+cd your-bot-source
+
 git clone https://github.com/imexotic/ExoBot.git
+
+python3 -m venv bot-env
 
 source bot-env/bin/activate
 
