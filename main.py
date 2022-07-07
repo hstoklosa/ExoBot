@@ -49,6 +49,11 @@ async def on_ready():
     exobot.cogs.music.setup(bot)
     exobot.cogs.roles.setup(bot)
 
+    await bot.change_presence(
+        status = discord.Status.online, 
+        activity = discord.Game(exobot.config['BOT_STATUS'])
+    )
+
     # Loading roles channel
     roles_channel = bot.get_channel(exobot.config['ROLES_CHANNEL'])
     roles = exobot.config['roles']
@@ -75,7 +80,8 @@ async def on_ready():
 if __name__ == '__main__':
 
     try:
-        bot.run(env_config['DISCORD_TOKEN'])
+        bot.run(env_config['BOT_TOKEN'])
+        
     except Exception as e:
         print("Error: Failed to connect with the Discord API. Please check your discord token!")
         exit(1)
