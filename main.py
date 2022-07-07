@@ -4,6 +4,11 @@ from discord.ext import commands
 from dotenv import dotenv_values
 
 
+# NOTE:
+# Discord Token and MySQL credentials can be changed in the .env file.
+# Other config values related to the bot can be changed in the config.json file.
+
+
 print(f"""
     ,------. ,--.   ,--.  ,-----.  ,-----.    ,-----.  ,--------. 
     |  .---'  \  `.'  /  '  .-.  ' |  |) /_  '  .-.  ' '--.  .--' 
@@ -29,20 +34,27 @@ intents.reactions = True
 
 bot = commands.Bot(exobot.config['COMMAND_PREFIX'], intents=intents)
 
+# for overriding the default help command
+bot.remove_command('help')
 
-def init():
 
-    @bot.event
-    async def on_ready():
-        print(f'Logged on as {bot.user}!')
+@bot.event
+async def on_ready():
+    print(f'Logged on as {bot.user}!')
 
-        # Loading cogs
-        exobot.cogs.general.setup(bot)
-        exobot.cogs.ranking.setup(bot)
-        exobot.cogs.polls.setup(bot)
+    # Loading cogs
+    exobot.cogs.general.setup(bot)
+    exobot.cogs.ranking.setup(bot)
+    exobot.cogs.polls.setup(bot)
+    exobot.cogs.music.setup(bot)
 
-    bot.run(env_config['DISCORD_TOKEN'])
 
+# Initialising the bot
 if __name__ == '__main__':
 
-    init() # Initialising the bot
+    try:
+        bot.run(env_config['DISCORD_TOKEN'])
+    except Exception as e:
+        print("Failed to connect with the Discord API. Please check your discord token.")
+        exit(1)
+
