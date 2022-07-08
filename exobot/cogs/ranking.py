@@ -76,5 +76,5 @@ class Ranking(commands.Cog):
         await ctx.send(ranking_string)
 
 
-def setup(bot):
-    bot.add_cog(Ranking(bot))
+async def setup(bot):
+    await bot.add_cog(Ranking(bot))

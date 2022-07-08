@@ -4,7 +4,6 @@ import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.abspath(os.path.join(dir_path, os.pardir)))
 
-
 import discord
 import shortuuid
 from discord.ext import commands
@@ -16,6 +15,7 @@ class Polls(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
 
     @commands.command()
     async def poll(self, ctx, question):
@@ -32,6 +32,7 @@ class Polls(commands.Cog):
         embed.set_footer(text=f'Poll ID: {poll_id}')
 
         sent_message = await ctx.send(embed=embed)
+
         
         # Add reactions for voting
         await sent_message.add_reaction('👍')
@@ -54,8 +55,6 @@ class Polls(commands.Cog):
         cursor.execute("UPDATE polls SET status = %s WHERE id = %s", ('0', poll_id))
         db.commit()
         
-        print(f'Poll {poll} has been closed.')
-        
         # Retrieving the message
         channel = await self.bot.fetch_channel(poll['channel'])
         message = await channel.fetch_message(poll['message'])
@@ -75,13 +74,14 @@ class Polls(commands.Cog):
             colour = discord.Colour.blue()
         )
 
-        await ctx.send(embed=close_embed)
+        #components=[Button(style=ButtonStyle.red, label="60 million years ago", custom_id="button1", disabled = True), Button(style=ButtonStyle.red, label="65 million years ago", custom_id="button2")]
 
+        await ctx.send(embed=close_embed)
 
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        user = await self.bot.fetch_user(user_id=payload.user_id)
+        user = await self.bot.fetch_user(payload.user_id)
         channel = await self.bot.fetch_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
 
@@ -102,5 +102,5 @@ class Polls(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(Polls(bot))
+async def setup(bot):
+    await bot.add_cog(Polls(bot))

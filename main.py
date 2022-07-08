@@ -17,7 +17,7 @@ print(f"""
     `------' '--'   '--'  `-----'  `------'   `-----'     `--'    
                                                                 
     ExoBot 1.0
-    Powered by discord.py
+    Powered by Discord.py 2.0
 """)
 
 
@@ -31,11 +31,10 @@ env_config = dotenv_values(".env")
 intents = discord.Intents.default()
 intents.members = True
 intents.reactions = True
+intents.message_content = True
 
-bot = commands.Bot(exobot.config['COMMAND_PREFIX'], intents=intents)
+bot = commands.Bot(exobot.config['COMMAND_PREFIX'], help_command=None, intents=intents)
 
-# for overriding the default help command
-bot.remove_command('help')
 
 
 @bot.event
@@ -43,11 +42,11 @@ async def on_ready():
     print(f'Logged on as {bot.user}!')
 
     # Loading cogs
-    exobot.cogs.general.setup(bot)
-    exobot.cogs.ranking.setup(bot)
-    exobot.cogs.polls.setup(bot)
-    exobot.cogs.music.setup(bot)
-    exobot.cogs.roles.setup(bot)
+    await exobot.cogs.general.setup(bot)
+    await exobot.cogs.ranking.setup(bot)
+    await exobot.cogs.polls.setup(bot)
+    await exobot.cogs.music.setup(bot)
+    await exobot.cogs.roles.setup(bot)
 
     await bot.change_presence(
         status = discord.Status.online, 
@@ -73,6 +72,7 @@ async def on_ready():
                 continue
 
             await msg_category.add_reaction(emoji_obj)
+
 
 
 

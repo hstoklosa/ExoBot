@@ -11,7 +11,6 @@ class Roles(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-
         roles_channel = exobot.config['ROLES_CHANNEL'] 
         roles = exobot.config['roles']
 
@@ -27,5 +26,6 @@ class Roles(commands.Cog):
                 selected_role = discord.utils.get(user.guild.roles, name=role_name) 
                 await user.add_roles(selected_role)
 
-def setup(bot):
-    bot.add_cog(Roles(bot))
+
+async def setup(bot):
+    await bot.add_cog(Roles(bot))

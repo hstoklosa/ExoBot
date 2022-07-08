@@ -40,7 +40,8 @@ class General(commands.Cog):
         embed.add_field(
             name = ':bar_chart: Poll Commands', 
             value = f'**{exobot.config["COMMAND_PREFIX"]}poll [question]** - Create a normal poll \n**{exobot.config["COMMAND_PREFIX"]}closepoll [poll_id]** - Disables an active poll', 
-            inline = False)    
+            inline = False
+        )    
             
         embed.add_field(
             name = ':mag_right: Ranking Commands', 
@@ -59,5 +60,5 @@ class General(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(General(bot))
+async def setup(bot):
+    await bot.add_cog(General(bot))
