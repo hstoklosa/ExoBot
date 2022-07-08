@@ -6,7 +6,8 @@ attrs==21.4.0
 cffi==1.15.1
 chardet==4.0.0
 charset-normalizer==2.1.0
-discord.py==1.7.3
+discord-ext-menus==1.0.0a32+g8686b5d
+discord.py @ git+https://github.com/Rapptz/discord.py@a8a6bf4f6c9d6cb71a23bf2079c410aeb1407a8b
 frozenlist==1.3.0
 idna==3.3
 install==1.3.5
