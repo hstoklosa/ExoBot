@@ -30,6 +30,7 @@ class General(commands.Cog):
 
     @commands.command()
     async def help(self, ctx):
+        prefix = exobot.config["COMMAND_PREFIX"]
 
         embed = discord.Embed(
             title = 'ExoBot - Help',
@@ -39,20 +40,25 @@ class General(commands.Cog):
 
         embed.add_field(
             name = ':bar_chart: Poll Commands', 
-            value = f'**{exobot.config["COMMAND_PREFIX"]}poll [question]** - Create a normal poll \n**{exobot.config["COMMAND_PREFIX"]}closepoll [poll_id]** - Disables an active poll', 
+            value = f'**{prefix}poll [question]** - Create a normal poll \n**{prefix}closepoll [poll_id]** - Disables an active poll \n**{prefix}listpolls** - Displays all polls', 
             inline = False
         )    
             
         embed.add_field(
             name = ':mag_right: Ranking Commands', 
-            value = f'**{exobot.config["COMMAND_PREFIX"]}rank** - Shows your current rank and experience points \n**{exobot.config["COMMAND_PREFIX"]}top [places]** - Shows the first x places', 
+            value = f'**{prefix}rank** - Shows your current rank and experience points \n**{prefix}top [places]** - Shows the first x places', 
             inline = False
         )
 
         embed.add_field(
             name = ':musical_keyboard: Music Commands', 
-            value = f'**{exobot.config["COMMAND_PREFIX"]}join** - Bot joins your channel \n**{exobot.config["COMMAND_PREFIX"]}leave** - Bot leaves your channel \n**{exobot.config["COMMAND_PREFIX"]}yt [link]** - Plays a song from the youtube link \n**{exobot.config["COMMAND_PREFIX"]}volume [amount]** - Sets volume to specified amount', 
+            value = f'**{prefix}join** - Bot joins your channel \n**{prefix}leave** - Bot leaves your channel \n**{prefix}yt [link]** - Plays a song from the youtube link \n**{prefix}pause** - Pauses the current song \n**{prefix}resume** - Resumes the current song \n**{prefix}volume [amount]** - Sets volume to specified amount', 
             inline = False
+        )
+
+        embed.add_field(
+            name = ' Info commands',
+            value = f'**{prefix}server** - Display server information \n**{prefix}user [user\'s name]** - Displays information about the user \n**{prefix}roles** - Displays all roles including the amount of members'
         )
 
         # await ctx.send(embed=embed)
