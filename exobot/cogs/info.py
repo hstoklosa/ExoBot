@@ -7,10 +7,11 @@ class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
     @commands.command()
     async def server(self, ctx):
+        """Displays information about the server"""
         guild = ctx.guild
-
 
         server_embed = discord.Embed(
             title = guild.name,
@@ -62,6 +63,28 @@ class Info(commands.Cog):
 
 
         await ctx.send(embed=server_embed)
+
+    @commands.command()
+    async def roles(self, ctx):
+        roles = ctx.guild.roles
+
+        roles_embed = discord.Embed(
+            title = "ExoBot Roles",
+            colour = discord.Colour.blue()
+        )
+
+        for role in roles:
+            name, members = role.name, len(role.members)
+
+            roles_embed.add_field(
+                name = "\u200b",
+                value = f"{name} (**{members}** members) ",
+                inline = False
+            )
+
+        await ctx.send(embed=roles_embed)
+        
+
 
 async def setup(bot):
     await bot.add_cog(Info(bot))
