@@ -1,3 +1,7 @@
+import os
+import glob
+
+
 import exobot
 import discord
 from discord.ext import commands
@@ -41,17 +45,31 @@ bot = commands.Bot(exobot.config['COMMAND_PREFIX'], help_command=None, intents=i
 async def on_ready():
     print(f'Logged on as {bot.user}!')
 
-    # Loading cogs
-    await exobot.cogs.general.setup(bot)
-    await exobot.cogs.ranking.setup(bot)
-    await exobot.cogs.polls.setup(bot)
-    await exobot.cogs.music.setup(bot)
-    await exobot.cogs.roles.setup(bot)
-
+    # Changing bot's status & activity
     await bot.change_presence(
         status = discord.Status.online, 
         activity = discord.Game(exobot.config['BOT_STATUS'])
     )
+
+
+    guild = bot.guilds[0]
+
+    # Loading essential custom emojis
+    icons = glob.glob('exobot/icons/*.png')
+    guild_emojis = [emoji.name for emoji in guild.emojis]
+
+    for icon_path in icons:
+        emoji_name = os.path.basename(icon_path).replace('.png', '')
+
+        if (emoji_name in guild_emojis):
+            continue
+
+        with open(icon_path, 'rb') as img:
+            img_byte = img.read()
+
+            await guild.create_custom_emoji(name=emoji_name, image=img_byte)
+
+
 
     # Loading roles channel
     roles_channel = bot.get_channel(exobot.config['ROLES_CHANNEL'])
@@ -72,6 +90,16 @@ async def on_ready():
                 continue
 
             await msg_category.add_reaction(emoji_obj)
+
+
+
+    # Loading cogs    
+    await exobot.cogs.general.setup(bot)
+    await exobot.cogs.ranking.setup(bot)
+    await exobot.cogs.polls.setup(bot)
+    await exobot.cogs.music.setup(bot)
+    await exobot.cogs.roles.setup(bot)
+    await exobot.cogs.info.setup(bot)
 
 
 
