@@ -78,6 +78,16 @@ class Music(commands.Cog):
 
 
     @commands.command()
+    async def pause(self, ctx):
+        return ctx.voice_client.pause()
+
+
+    @commands.command()
+    async def resume(self, ctx):
+        return ctx.voice_client.resume()
+        
+
+    @commands.command()
     async def volume(self, ctx, volume: int):
         if ctx.voice_client is None:
             return await ctx.send("Not connected to a voice channel.")
