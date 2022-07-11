@@ -1,6 +1,6 @@
 import os
 import glob
-
+import datetime, time
 
 import exobot
 import discord
@@ -44,6 +44,9 @@ bot = commands.Bot(exobot.config['COMMAND_PREFIX'], help_command=None, intents=i
 @bot.event
 async def on_ready():
     print(f'Logged on as {bot.user}!')
+
+    # NOTE: Uptime calculations
+    bot.start_time = time.time()
 
     # Changing bot's status & activity
     await bot.change_presence(

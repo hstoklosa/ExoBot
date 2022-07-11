@@ -1,3 +1,5 @@
+import datetime, time
+
 import exobot
 import discord
 from discord.ext import commands
@@ -139,6 +141,24 @@ class Info(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         await ctx.send(f"My ping is {self.bot.latency}ms")
+
+    @commands.command()
+    async def uptime(self, ctx):
+        start_time = self.bot.start_time
+
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        uptime = str(datetime.timedelta(seconds=difference))
+
+        uptime_embed = discord.Embed(
+            title = "ExoBot Uptime",
+            description = uptime,
+            colour = discord.Colour.blue()
+        )
+
+        uptime_embed.set_footer(text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar.url)
+
+        await ctx.send(embed=uptime_embed)
 
 
 async def setup(bot):
