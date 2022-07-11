@@ -115,6 +115,28 @@ class Info(commands.Cog):
         await ctx.send(embed=user_embed)
 
 
+    @commands.command()
+    async def avatar(self, ctx, member: discord.Member = None):
+        """Displays specified user's avatar"""
+        print('Hello world')
+
+        if member is None:
+            member = ctx.author
+
+        avatar_embed = discord.Embed(
+            description = f"[Avatar URL]({member.avatar.url}])",
+            colour = discord.Colour.blue()
+        )
+
+        avatar_embed.set_author(name=member, icon_url=member.avatar.url)
+        avatar_embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
+
+        avatar_embed.set_image(url=member.avatar.url)
+
+        await ctx.send(embed=avatar_embed)
+
+
+
 
 async def setup(bot):
     await bot.add_cog(Info(bot))
