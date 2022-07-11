@@ -48,16 +48,15 @@ class Ranking(commands.Cog):
 
     @commands.command()    
     async def rank(self, ctx, member: discord.Member = None):
-        if member == None:
+        if member is None:
             cursor.execute("SELECT * FROM users WHERE user_id = %s", (ctx.author.id, ))
             db_user = cursor.fetchall()[0]
-
-            return await ctx.send(f"{ctx.author.mention} You are at level {db_user['level']}!")
+            return await ctx.send(f"{ctx.author.mention} You are at level {db_user['level']} with {db_user['experience']} experience points!")
 
         cursor.execute("SELECT * FROM users WHERE user_id = %s", (member.id, ))
         db_user = cursor.fetchall()[0]
 
-        await ctx.send(f"{member.mention} is at level {db_user['level']}!")
+        await ctx.send(f"{member.mention} is at level {db_user['level']} with {db_user['experience']} experience points!")
 
 
     @commands.command()
