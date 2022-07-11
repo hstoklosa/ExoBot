@@ -136,6 +136,9 @@ class Info(commands.Cog):
         await ctx.send(embed=avatar_embed)
 
 
+    @commands.command()
+    async def ping(self, ctx):
+        await ctx.send(f"My ping is {self.bot.latency}ms")
 
 
 async def setup(bot):
