@@ -39,6 +39,8 @@ class Ranking(commands.Cog):
         lvl_start = db_user['level']
         lvl_end = int(experience ** (1 / 4))
 
+        print(self.remaining_points(lvl_start, experience))
+
         if lvl_start < lvl_end:
             await message.channel.send(f':tada:  {user.mention} has reached level {lvl_end}. Congrats!  :tada:')
             
@@ -46,17 +48,54 @@ class Ranking(commands.Cog):
             db.commit()
 
 
+
     @commands.command()    
     async def rank(self, ctx, member: discord.Member = None):
         if member is None:
-            cursor.execute("SELECT * FROM users WHERE user_id = %s", (ctx.author.id, ))
-            db_user = cursor.fetchall()[0]
-            return await ctx.send(f"{ctx.author.mention} You are at level {db_user['level']} with {db_user['experience']} experience points!")
+            member = ctx.author
 
         cursor.execute("SELECT * FROM users WHERE user_id = %s", (member.id, ))
-        db_user = cursor.fetchall()[0]
+        user = cursor.fetchall()[0]
 
-        await ctx.send(f"{member.mention} is at level {db_user['level']} with {db_user['experience']} experience points!")
+
+        rank_embed = discord.Embed(
+            colour = discord.Colour.blue()
+        )
+
+        rank_embed.set_author(name=member, icon_url=member.avatar.url)
+        rank_embed.set_footer(text=f"Requested by {member}", icon_url=member.avatar.url)
+
+        rank_embed.add_field(
+            name = "\u200b",
+            value = f"**Level:** {user['level']} \n**Experience:** {user['experience']}",
+            inline = False
+        )
+
+
+        current_points = user['experience']
+        target_points = self.remaining_points(user['level'], user['experience'])
+
+        percent = int(24 * (current_points / target_points))
+        bar = '#' * percent + '\u200b ' * (24 - percent)
+
+        print(f"[{bar}]") 
+        
+        rank_embed.add_field(
+            name = f"\u200b",
+            value = f"Next level at **{target_points}** points \n[{bar}]",
+            inline = False
+        )
+
+        await ctx.send(embed=rank_embed)
+
+
+    def remaining_points(self, lvl, experience):
+        lvl_end = int(experience ** (1 / 4))
+
+        if (lvl < lvl_end):
+            return experience
+
+        return self.remaining_points(lvl, experience + 6)
 
 
     @commands.command()
@@ -73,6 +112,14 @@ class Ranking(commands.Cog):
             ranking_string += f"\n{idx + 1}. **{dc_user.display_name}** (Lvl. {level} - Exp. {exp})"
 
         await ctx.send(ranking_string)
+    
+    @commands.command()
+    async def op(self, ctx):
+        user = ctx.author.id
+
+        cursor.execute("INSERT INTO users (user_id) VALUES (%s)", (user,))
+        db.commit()
+        
 
 
 async def setup(bot):
