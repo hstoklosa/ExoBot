@@ -83,7 +83,37 @@ class Info(commands.Cog):
             )
 
         await ctx.send(embed=roles_embed)
-        
+
+
+    @commands.command()
+    async def user(self, ctx, member: discord.Member = None):
+        """Displays information about the specified user"""
+
+        if member is None:
+            member = ctx.author
+
+        user_embed = discord.Embed(
+            colour = discord.Colour.blue()
+        )
+
+
+        user_embed.add_field(
+            name = "Joined Discord:",
+            value = exobot.utils.format_date(member.created_at),
+            inline = False
+        )
+
+        user_embed.add_field(
+            name = "Joined Server:",
+            value = exobot.utils.format_date(member.joined_at),
+            inline = False
+        )
+
+        user_embed.set_thumbnail(url=member.avatar.url)
+        user_embed.set_footer(text=member, icon_url=member.avatar.url)
+
+        await ctx.send(embed=user_embed)
+
 
 
 async def setup(bot):

@@ -55,6 +55,7 @@ async def on_ready():
     guild = bot.guilds[0]
 
     # Loading essential custom emojis
+    # NOTE: Upload your icons to exobot/icons (file name will be the name of the command)
     icons = glob.glob('exobot/icons/*.png')
     guild_emojis = [emoji.name for emoji in guild.emojis]
 
@@ -109,7 +110,6 @@ if __name__ == '__main__':
 
     try:
         bot.run(env_config['BOT_TOKEN'])
-        
     except Exception as e:
         print("Error: Failed to connect with the Discord API. Please check your discord token!")
         exit(1)
