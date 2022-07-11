@@ -1,3 +1,4 @@
+import queue
 import asyncio
 import youtube_dl
 import discord
@@ -5,7 +6,6 @@ from discord.ext import commands
 
 
 youtube_dl.utils.bug_reports_message = lambda: ''
-
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -47,10 +47,12 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 
+
 class Music(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.queue = queue.Queue()
 
 
     @commands.command()
@@ -72,9 +74,21 @@ class Music(commands.Cog):
     async def yt(self, ctx, *, url):
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+
+            if (ctx.voice_client.is_playing()):
+                self.queue.put(player)
+                return await ctx.send(f'Added to queue: {player.title}')
+
+            ctx.voice_client.play(player, after=lambda e: self.play_next(ctx))
 
         await ctx.send(f'Now playing: {player.title}')
+
+    def play_next(self, ctx):
+        if self.queue.empty():
+            return ctx.voice_client.stop()
+
+        next_player = self.queue.get()
+        ctx.voice_client.play(next_player, after=lambda e: self.play_next(ctx))
 
 
     @commands.command()
