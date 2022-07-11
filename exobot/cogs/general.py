@@ -40,26 +40,34 @@ class General(commands.Cog):
 
         embed.add_field(
             name = ':bar_chart: Poll Commands', 
-            value = f'**{prefix}poll [question]** - Create a normal poll \n**{prefix}closepoll [poll_id]** - Disables an active poll \n**{prefix}listpolls** - Displays all polls', 
+            value = f'**{prefix}poll [question]** - Create a normal poll \n**{prefix}closepoll [poll_id]** - Deactivates an active poll \n**{prefix}listpolls** - Displays all polls', 
             inline = False
         )    
             
         embed.add_field(
             name = ':mag_right: Ranking Commands', 
-            value = f'**{prefix}rank** - Shows your current rank and experience points \n**{prefix}top [places]** - Shows the first x places', 
+            value = f'**{prefix}rank [optional: user mention]** - Shows user\'s current rank and experience points \n**{prefix}top [places]** - Shows the first x places', 
             inline = False
         )
 
         embed.add_field(
             name = ':musical_keyboard: Music Commands', 
-            value = f'**{prefix}join** - Bot joins your channel \n**{prefix}leave** - Bot leaves your channel \n**{prefix}yt [link]** - Plays a song from the youtube link \n**{prefix}pause** - Pauses the current song \n**{prefix}resume** - Resumes the current song \n**{prefix}volume [amount]** - Sets volume to specified amount', 
+            value = f'**{prefix}join** - Bot joins your channel \n**{prefix}leave** - Bot leaves your channel \n**{prefix}yt [link]** - Plays a song from the youtube link \n**{prefix}pause** - Pauses the song \n**{prefix}resume** - Resumes the song \n**{prefix}volume [amount]** - Sets volume to specified amount', 
             inline = False
         )
 
         embed.add_field(
-            name = ' Info commands',
-            value = f'**{prefix}server** - Display server information \n**{prefix}user [user\'s name]** - Displays information about the user \n**{prefix}roles** - Displays all roles including the amount of members'
+            name = ':information_source: Info Commands',
+            value = f'**{prefix}server** - Displays server information \n**{prefix}roles** - Displays all roles including the amount of members \n**{prefix}user [optional: user mention]** - Displays information about the user \n**{prefix}avatar [optional: user mention]** - Displays the avatar of the user \n**{prefix}uptime** - Shows the bot\'s uptime \n**{prefix}ping** - Shows the bot\'s ping',
+            inline = False
         )
+
+        embed.add_field(
+            name = ':joy: Fun Commands',
+            value = f'**{prefix}meme** - Sends a random meme to the channel',
+            inline = False
+        )
+
 
         # await ctx.send(embed=embed)
         await ctx.reply(embed=embed)
