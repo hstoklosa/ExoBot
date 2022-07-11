@@ -4,3 +4,4 @@ from .polls import *
 from .music import *
 from .roles import *
 from .info import *
+from .fun import *

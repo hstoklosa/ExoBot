@@ -101,6 +101,7 @@ async def on_ready():
     await exobot.cogs.music.setup(bot)
     await exobot.cogs.roles.setup(bot)
     await exobot.cogs.info.setup(bot)
+    await exobot.cogs.fun.setup(bot)
 
 
 
