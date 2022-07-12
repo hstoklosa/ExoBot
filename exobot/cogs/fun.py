@@ -28,6 +28,11 @@ class Fun(commands.Cog):
                 await ctx.send(embed=meme_embed)
 
         
+    @commands.command()
+    async def rps(self, ctx):
+        await ctx.send('Hello World')
+        
+
 
 async def setup(bot):
     await bot.add_cog(Fun(bot))

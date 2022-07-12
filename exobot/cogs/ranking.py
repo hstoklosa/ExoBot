@@ -39,14 +39,11 @@ class Ranking(commands.Cog):
         lvl_start = db_user['level']
         lvl_end = int(experience ** (1 / 4))
 
-        print(self.remaining_points(lvl_start, experience))
-
         if lvl_start < lvl_end:
             await message.channel.send(f':tada:  {user.mention} has reached level {lvl_end}. Congrats!  :tada:')
             
             cursor.execute("UPDATE users SET level = %s WHERE user_id = %s", (lvl_end, user.id))
             db.commit()
-
 
 
     @commands.command()    
@@ -78,7 +75,6 @@ class Ranking(commands.Cog):
         percent = int(24 * (current_points / target_points))
         bar = '#' * percent + '\u200b ' * (24 - percent)
 
-        print(f"[{bar}]") 
         
         rank_embed.add_field(
             name = f"\u200b",
@@ -112,6 +108,7 @@ class Ranking(commands.Cog):
             ranking_string += f"\n{idx + 1}. **{dc_user.display_name}** (Lvl. {level} - Exp. {exp})"
 
         await ctx.send(ranking_string)
+    
     
     @commands.command()
     async def op(self, ctx):
