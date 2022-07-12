@@ -1,4 +1,3 @@
-import json
 import random
 import aiohttp
 import discord
@@ -12,8 +11,10 @@ class Fun(commands.Cog):
     @commands.command()
     async def meme(self, ctx):
         """Responds with a random meme"""
+
         meme_embed = discord.Embed(
             title = "ExoBot Random Meme",
+            description = "Fetched from reddit.com/r/memes",
             colour = discord.Colour.blue()
         )
 
@@ -23,7 +24,9 @@ class Fun(commands.Cog):
 
                 meme_embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
                 meme_embed.set_image(url=response['data']['children'] [random.randint(0, 25)]['data']['url'])
+
                 await ctx.send(embed=meme_embed)
+
         
 
 async def setup(bot):
