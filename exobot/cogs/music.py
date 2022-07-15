@@ -62,7 +62,6 @@ class Music(commands.Cog):
         vc = ctx.guild.voice_client
 
         if vc is not None:
-            print('vs is none')
             return await vc.move_to(channel)        
 
         return await channel.connect()
@@ -75,24 +74,25 @@ class Music(commands.Cog):
 
     @app_commands.command(name='yt', description='Plays a song from a youtube link.')
     async def yt(self, ctx, *, url: str):
-        
+        vc = ctx.guild.voice_client
+
         async with ctx.channel.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
 
-            if (ctx.guild.voice_client.is_playing()):
+            if (vc.is_playing()):
                 self.queue.put(player)
                 return await ctx.response.send_message(f'Added to queue: {player.title}')
 
-            ctx.guild.voice_client.play(player, after=lambda e: self.play_next(ctx))
+            vc.play(player, after=lambda e: self.play_next(vc))
 
         await ctx.response.send_message(f'Now playing: {player.title}')
 
-    def play_next(self, ctx):
+    def play_next(self, vc):
         if self.queue.empty():
-            return ctx.guild.voice_client.stop()
+            return vc.stop()
 
         next_player = self.queue.get()
-        ctx.guild.voice_client.play(next_player, after=lambda e: self.play_next(ctx))
+        vc.play(next_player, after=lambda e: self.play_next(vc))
 
 
     @app_commands.command(name='pause', description='Pauses the voice client.')
