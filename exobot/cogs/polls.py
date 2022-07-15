@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(dir_path, os.pardir)))
 
 import discord
 import shortuuid
-from discord import ui
+from discord import app_commands, ui
 from discord.ext import commands, menus
 from managers.database import db, cursor
 
@@ -15,7 +15,8 @@ from managers.database import db, cursor
 
 class MySource(menus.ListPageSource):
     async def format_page(self, menu, entries):
-        bot = menu.ctx.bot
+        bot = menu.ctx.client
+
         embed = discord.Embed(
             title = "Polls Overview",
             description = f"Page {menu.current_page}/3",
@@ -35,7 +36,7 @@ class MySource(menus.ListPageSource):
                 inline = False
             )
 
-        embed.set_footer(text=f"Requested by {menu.ctx.author}")
+        embed.set_footer(text=f"Requested by {menu.ctx.user}")
         return embed
 
 
@@ -67,7 +68,7 @@ class MyMenuPages(ui.View, menus.MenuPages):
 
     async def interaction_check(self, interaction):
         """Only allow the author that invoke the command to be able to use the interaction"""
-        return interaction.user == self.ctx.author
+        return interaction.user == self.ctx.user
 
 
     # This is extremely similar to Custom MenuPages(I will not explain these)
@@ -91,10 +92,6 @@ class MyMenuPages(ui.View, menus.MenuPages):
         await self.show_checked_page(self.current_page + 1)
 
 
-    @ui.button(emoji='<:stop_check:754948796365930517>', style=discord.ButtonStyle.blurple)
-    async def stop_page(self, button, interaction):
-        self.stop()
-
 
 
 class Polls(commands.Cog):
@@ -103,8 +100,8 @@ class Polls(commands.Cog):
         self.bot = bot
 
 
-    @commands.command()
-    async def poll(self, ctx, question):
+    @app_commands.command(name='poll', description='Creates a poll')
+    async def poll(self, ctx, question: str):
         poll_id = shortuuid.ShortUUID().random(length=10)
 
         embed = discord.Embed(
@@ -113,23 +110,23 @@ class Polls(commands.Cog):
 
         embed.add_field(name='Question', value=question, inline = False)    
         embed.add_field(name='Choices', value='👍 Yes \n\n 👎 No', inline = False)
-        embed.add_field(name='Settings', value='None', inline = False)
         embed.add_field(name='Status', value=":green_circle: Active", inline = False)
         embed.set_footer(text=f'Poll ID: {poll_id}')
 
-        sent_message = await ctx.send(embed=embed)
+        sent_message = await ctx.channel.send(embed=embed)
 
         
         # Add reactions for voting
         await sent_message.add_reaction('👍')
         await sent_message.add_reaction('👎')
 
-        cursor.execute("INSERT INTO polls (id, user_id, question, channel, message) VALUES (%s, %s, %s, %s, %s)", (poll_id, ctx.author.id, question, ctx.channel.id, sent_message.id))
+
+        cursor.execute("INSERT INTO polls (id, user_id, question, channel, message) VALUES (%s, %s, %s, %s, %s)", (poll_id, ctx.user.id, question, ctx.channel.id, sent_message.id))
         db.commit()
 
 
-    @commands.command()
-    async def closepoll(self, ctx, poll_id):
+    @app_commands.command(name='closepoll', description='Closes the specified poll.')
+    async def closepoll(self, ctx, poll_id: str):
         cursor.execute("SELECT * FROM polls WHERE id = %s", (poll_id, ))
         poll = cursor.fetchone()
 
@@ -150,7 +147,7 @@ class Polls(commands.Cog):
         embed_dict['color'] = discord.Colour.red().value
 
         embed = discord.Embed.from_dict(embed_dict)
-        embed.set_field_at(3, name='Status', value=':red_circle: Disabled', inline=True)
+        embed.set_field_at(2, name='Status', value=':red_circle: Disabled', inline=True)
 
         await message.edit(embed=embed)
 
@@ -162,9 +159,10 @@ class Polls(commands.Cog):
 
         #components=[Button(style=ButtonStyle.red, label="60 million years ago", custom_id="button1", disabled = True), Button(style=ButtonStyle.red, label="65 million years ago", custom_id="button2")]
 
-        await ctx.send(embed=close_embed)
+        await ctx.response.send_message(embed=close_embed)
 
-    @commands.command()
+
+    @app_commands.command(name='listpolls', description='List of all polls')
     async def listpolls(self, ctx):
         cursor.execute("SELECT * FROM polls")
         polls = cursor.fetchall()
@@ -173,7 +171,6 @@ class Polls(commands.Cog):
         menu = MyMenuPages(formatter)
 
         await menu.start(ctx)
-
 
 
     @commands.Cog.listener()
@@ -200,4 +197,4 @@ class Polls(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Polls(bot))
+    await bot.add_cog(Polls(bot), guild=discord.Object(id=929135361735671889))

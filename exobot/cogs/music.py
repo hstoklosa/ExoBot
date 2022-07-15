@@ -2,6 +2,7 @@ import queue
 import asyncio
 import youtube_dl
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 
@@ -55,61 +56,66 @@ class Music(commands.Cog):
         self.queue = queue.Queue()
 
 
-    @commands.command()
+    @app_commands.command(name='join', description='Bot joins your voice channel.')
     async def join(self, ctx):
-        channel = ctx.author.voice.channel
+        channel = ctx.user.voice.channel
+        vc = ctx.guild.voice_client
 
-        if ctx.voice_client is not None:
-            return await ctx.voice_client.move_to(channel)        
+        if vc is not None:
+            print('vs is none')
+            return await vc.move_to(channel)        
 
         return await channel.connect()
 
 
-    @commands.command()
+    @app_commands.command(name='leave', description='Bot leave its current voice channel.')
     async def leave(self, ctx):
-        return await ctx.voice_client.disconnect()
+        return await ctx.guild.voice_client.disconnect()
 
 
-    @commands.command()
-    async def yt(self, ctx, *, url):
-        async with ctx.typing():
+    @app_commands.command(name='yt', description='Plays a song from a youtube link.')
+    async def yt(self, ctx, *, url: str):
+        
+        async with ctx.channel.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
 
-            if (ctx.voice_client.is_playing()):
+            if (ctx.guild.voice_client.is_playing()):
                 self.queue.put(player)
-                return await ctx.send(f'Added to queue: {player.title}')
+                return await ctx.response.send_message(f'Added to queue: {player.title}')
 
-            ctx.voice_client.play(player, after=lambda e: self.play_next(ctx))
+            ctx.guild.voice_client.play(player, after=lambda e: self.play_next(ctx))
 
-        await ctx.send(f'Now playing: {player.title}')
+        await ctx.response.send_message(f'Now playing: {player.title}')
 
     def play_next(self, ctx):
         if self.queue.empty():
-            return ctx.voice_client.stop()
+            return ctx.guild.voice_client.stop()
 
         next_player = self.queue.get()
-        ctx.voice_client.play(next_player, after=lambda e: self.play_next(ctx))
+        ctx.guild.voice_client.play(next_player, after=lambda e: self.play_next(ctx))
 
 
-    @commands.command()
+    @app_commands.command(name='pause', description='Pauses the voice client.')
     async def pause(self, ctx):
-        return ctx.voice_client.pause()
+        return ctx.guild.voice_client.pause()
 
 
-    @commands.command()
+    @app_commands.command(name='resume', description='Resumes the voice client.')
     async def resume(self, ctx):
-        return ctx.voice_client.resume()
+        return ctx.guild.voice_client.resume()
         
 
-    @commands.command()
+    @app_commands.command(name='volume', description='Changes the volume to the specified amount.')
     async def volume(self, ctx, volume: int):
-        if ctx.voice_client is None:
-            return await ctx.send("Not connected to a voice channel.")
+        vc = ctx.guild.voice_client
 
-        ctx.voice_client.source.volume = volume / 100
-        await ctx.send(f"Changed volume to {volume}%")
+        if vc is None:
+            return await ctx.response.send_message("Not connected to a voice channel.")
+
+        vc.source.volume = volume / 100
+        await ctx.response.send_message(f"Changed volume to {volume}%")
 
 
 
 async def setup(bot):
-    await bot.add_cog(Music(bot))
+    await bot.add_cog(Music(bot), guild=discord.Object(id=929135361735671889))

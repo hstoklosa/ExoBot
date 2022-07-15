@@ -28,4 +28,4 @@ class Roles(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Roles(bot))
+    await bot.add_cog(Roles(bot), guild=discord.Object(id=929135361735671889))

@@ -2,6 +2,7 @@ import datetime, time
 
 import exobot
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 class Info(commands.Cog):
@@ -10,7 +11,7 @@ class Info(commands.Cog):
         self.bot = bot
 
 
-    @commands.command()
+    @app_commands.command(name='server', description='Displays information about the server')
     async def server(self, ctx):
         """Displays information about the server"""
         guild = ctx.guild
@@ -64,9 +65,10 @@ class Info(commands.Cog):
         )
 
 
-        await ctx.send(embed=server_embed)
+        await ctx.response.send_message(embed=server_embed)
 
-    @commands.command()
+
+    @app_commands.command(name='roles', description='Displays a list of all guild roles')
     async def roles(self, ctx):
         roles = ctx.guild.roles
 
@@ -84,15 +86,13 @@ class Info(commands.Cog):
                 inline = False
             )
 
-        await ctx.send(embed=roles_embed)
+        await ctx.response.send_message(embed=roles_embed)
 
 
-    @commands.command()
+    @app_commands.command(name='user', description='Displays information about the specified user')
     async def user(self, ctx, member: discord.Member = None):
-        """Displays information about the specified user"""
-
         if member is None:
-            member = ctx.author
+            member = ctx.user
 
         user_embed = discord.Embed(
             colour = discord.Colour.blue()
@@ -114,16 +114,13 @@ class Info(commands.Cog):
         user_embed.set_thumbnail(url=member.avatar.url)
         user_embed.set_footer(text=member, icon_url=member.avatar.url)
 
-        await ctx.send(embed=user_embed)
+        await ctx.response.send_message(embed=user_embed)
 
 
-    @commands.command()
+    @app_commands.command(name='avatar', description='Displays specified user\'s avatar')
     async def avatar(self, ctx, member: discord.Member = None):
-        """Displays specified user's avatar"""
-        print('Hello world')
-
         if member is None:
-            member = ctx.author
+            member = ctx.user
 
         avatar_embed = discord.Embed(
             description = f"[Avatar URL]({member.avatar.url}])",
@@ -131,18 +128,20 @@ class Info(commands.Cog):
         )
 
         avatar_embed.set_author(name=member, icon_url=member.avatar.url)
-        avatar_embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
+        avatar_embed.set_footer(text=f"Requested by {ctx.user}", icon_url=ctx.user.avatar.url)
 
         avatar_embed.set_image(url=member.avatar.url)
 
-        await ctx.send(embed=avatar_embed)
+        await ctx.response.send_message(embed=avatar_embed)
 
 
-    @commands.command()
-    async def ping(self, ctx):
-        await ctx.send(f"My ping is {self.bot.latency}ms")
 
-    @commands.command()
+    @app_commands.command(name='ping', description='Bot latency')
+    async def ping(self, ctx: discord.Interaction):
+        await ctx.response.send_message(f"My ping is {self.bot.latency}ms")
+
+
+    @app_commands.command(name='uptime', description='Shows how long the bot has been running')
     async def uptime(self, ctx):
         start_time = self.bot.start_time
 
@@ -156,10 +155,11 @@ class Info(commands.Cog):
             colour = discord.Colour.blue()
         )
 
-        uptime_embed.set_footer(text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar.url)
+        uptime_embed.set_footer(text=f'Requested by {ctx.user}', icon_url=ctx.user.avatar.url)
 
-        await ctx.send(embed=uptime_embed)
+        await ctx.response.send_message(embed=uptime_embed)
+
 
 
 async def setup(bot):
-    await bot.add_cog(Info(bot))
+    await bot.add_cog(Info(bot), guild=discord.Object(id=929135361735671889))

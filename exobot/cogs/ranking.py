@@ -1,3 +1,4 @@
+from re import I
 import sys
 import os
 
@@ -5,8 +6,10 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.abspath(os.path.join(dir_path, os.pardir)))
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from managers.database import db, cursor
+from utils import safe_list_get
 
 
 class Ranking(commands.Cog):
@@ -46,14 +49,17 @@ class Ranking(commands.Cog):
             db.commit()
 
 
-    @commands.command()    
+    @app_commands.command(name='rank', description='Displays your/the mentioned user\'s rank.')  
     async def rank(self, ctx, member: discord.Member = None):
         if member is None:
-            member = ctx.author
+            member = ctx.user
 
         cursor.execute("SELECT * FROM users WHERE user_id = %s", (member.id, ))
-        user = cursor.fetchall()[0]
+        user = cursor.fetchone()
 
+        if user is None:
+            return await ctx.response.send_message(f'{member.mention} isn\'t registered.')
+        
 
         rank_embed = discord.Embed(
             colour = discord.Colour.blue()
@@ -73,7 +79,7 @@ class Ranking(commands.Cog):
         target_points = self.remaining_points(user['level'], user['experience'])
 
         percent = int(24 * (current_points / target_points))
-        bar = '#' * percent + '\u200b ' * (24 - percent)
+        bar = '█' * percent + '░' * (24 - percent)
 
         
         rank_embed.add_field(
@@ -82,7 +88,7 @@ class Ranking(commands.Cog):
             inline = False
         )
 
-        await ctx.send(embed=rank_embed)
+        await ctx.response.send_message(embed=rank_embed)
 
 
     def remaining_points(self, lvl, experience):
@@ -94,8 +100,8 @@ class Ranking(commands.Cog):
         return self.remaining_points(lvl, experience + 6)
 
 
-    @commands.command()
-    async def top(self, ctx, amount = 5):
+    @app_commands.command(name='top', description='Displays the top x users in the ranking.') 
+    async def top(self, ctx, amount: int = 5):
         cursor.execute("SELECT * FROM users ORDER BY level DESC LIMIT %s", (amount, ))
         users = cursor.fetchall()
 
@@ -107,7 +113,7 @@ class Ranking(commands.Cog):
 
             ranking_string += f"\n{idx + 1}. **{dc_user.display_name}** (Lvl. {level} - Exp. {exp})"
 
-        await ctx.send(ranking_string)
+        await ctx.response.send_message(ranking_string)
     
     
     @commands.command()
@@ -120,4 +126,4 @@ class Ranking(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Ranking(bot))
+    await bot.add_cog(Ranking(bot), guild=discord.Object(id=929135361735671889))
