@@ -1,6 +1,7 @@
 from .cogs import *
 from .managers import *
 from .utils import *
+from .models import *
 
 
 env = read_env_file('exobot/config/.env')

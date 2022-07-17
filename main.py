@@ -27,7 +27,7 @@ print(f"""
 
 # Setting up the bot
 
-class MyBot(commands.Bot):
+class Bot(commands.Bot):
     
     def __init__(self):
         intents = discord.Intents.default()
@@ -36,9 +36,9 @@ class MyBot(commands.Bot):
         intents.message_content = True
 
         super().__init__(
-            command_prefix=exobot.config['COMMAND_PREFIX'], 
-            help_command=None,  
-            intents=intents
+            command_prefix = exobot.config['COMMAND_PREFIX'], 
+            help_command = None,  
+            intents = intents
         )
 
 
@@ -47,15 +47,15 @@ class MyBot(commands.Bot):
 
         self.start_time = time.time()
 
-        # Changing bot's status & activity
+        # bot's status & activity
         await self.change_presence(
             status = discord.Status.online, 
             activity = discord.Game(exobot.config['BOT_STATUS'])
         )
 
-
+        # NOTE:
         # Loading essential custom emojis
-        # NOTE: Upload your icons to exobot/icons (file name will be the name of the command)
+        # Upload your icons to exobot/icons (file name will be the name of the command)
         guild = self.guilds[0]
         guild_emojis = [emoji.name for emoji in guild.emojis]
 
@@ -73,14 +73,12 @@ class MyBot(commands.Bot):
                 await guild.create_custom_emoji(name=emoji_name, image=img_byte)
 
 
-        # Loading roles channel
-        roles_channel = self.get_channel(exobot.config['ROLES_CHANNEL'])
-        roles = exobot.config['roles']
-
-
         # NOTE: Loading each category with reactions
         # 1. Set-up roles and custom emojis on your discord sevrer
         # 2. Configure config.json by creating categories and lisitng each role e.g.: "category" -> "role_name": "emoji_name" 
+
+        roles_channel = self.get_channel(exobot.config['ROLES_CHANNEL'])
+        roles = exobot.config['roles']
 
         for category, roles in roles.items():
             msg_category = await roles_channel.send(f"Category: **{category}**")
@@ -95,19 +93,18 @@ class MyBot(commands.Bot):
 
 
     # overwritten discord method, ties to the setup() method in each cog
-    # find cog folder in ./exobot and load all class files
     async def setup_hook(self):
-        await self.load_extension('jishaku') # debugging cog
-
+        # find cogs folder in ./exobot and load all class files
         for fn in os.listdir('./exobot/cogs'):
             if fn.endswith('.py'):
                 await self.load_extension(f"exobot.cogs.{fn[:-3]}")
 
+        await self.load_extension('jishaku') # debugging cog
         await self.tree.sync(guild=discord.Object(id=929135361735671889))
 
 
 
 # Initialising the bot
 
-bot = MyBot()
+bot = Bot()
 bot.run(exobot.env['BOT_TOKEN'])
