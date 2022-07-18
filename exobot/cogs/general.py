@@ -12,6 +12,7 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
     @commands.Cog.listener()
     async def on_ready(self):
 
@@ -41,6 +42,8 @@ class General(commands.Cog):
 
         roles_channel = self.bot.get_channel(exobot.config['ROLES_CHANNEL'])
         roles = exobot.config['roles']
+
+        await roles_channel.purge(limit=1000, bulk=True)
 
         for category, roles in roles.items():
             msg_category = await roles_channel.send(f"Category: **{category}**")
