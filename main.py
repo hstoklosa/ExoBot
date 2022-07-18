@@ -1,6 +1,6 @@
-import os
 import time
-import glob
+import os
+
 
 import discord
 import exobot
@@ -47,49 +47,14 @@ class Bot(commands.Bot):
 
         self.start_time = time.time()
 
-        # bot's status & activity
+        # bot's avatar & status
+        with open('./exobot/assets/avatar.jpg', 'rb') as img:
+            await self.user.edit(avatar=img.read())
+
         await self.change_presence(
             status = discord.Status.online, 
             activity = discord.Game(exobot.config['BOT_STATUS'])
         )
-
-        # NOTE:
-        # Loading essential custom emojis
-        # Upload your icons to exobot/icons (file name will be the name of the command)
-        guild = self.guilds[0]
-        guild_emojis = [emoji.name for emoji in guild.emojis]
-
-        icons = glob.glob('exobot/icons/*.png')
-
-        for icon_path in icons:
-            emoji_name = os.path.basename(icon_path).replace('.png', '')
-
-            if (emoji_name in guild_emojis):
-                continue
-
-            with open(icon_path, 'rb') as img:
-                img_byte = img.read()
-
-                await guild.create_custom_emoji(name=emoji_name, image=img_byte)
-
-
-        # NOTE: Loading each category with reactions
-        # 1. Set-up roles and custom emojis on your discord sevrer
-        # 2. Configure config.json by creating categories and lisitng each role e.g.: "category" -> "role_name": "emoji_name" 
-
-        roles_channel = self.get_channel(exobot.config['ROLES_CHANNEL'])
-        roles = exobot.config['roles']
-
-        for category, roles in roles.items():
-            msg_category = await roles_channel.send(f"Category: **{category}**")
-
-            for _, emoji in roles.items():
-                emoji_obj = discord.utils.get(roles_channel.guild.emojis, name=emoji)
-
-                if emoji_obj is None:
-                    continue
-
-                await msg_category.add_reaction(emoji_obj)
 
 
     # overwritten discord method, ties to the setup() method in each cog
