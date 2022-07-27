@@ -1,17 +1,22 @@
-from exobot.__init__ import env
+import aiohttp
 from exobot.models.osu import User
 
-import aiohttp
 
 
-# Simple Osu API wrapper
-# NOTE: Change CLIENT_ID and CLIENT_SECRET in exobot/config/.env
+# NOTE: Simple Osu API wrapper
+#       Change CLIENT_ID and CLIENT_SECRET in exobot/config/.env
+
 
 class Osu():
 
-    def __init__(self):
+    def __init__(self, client_id, client_secret):
+        if not client_id or not client_secret:
+            raise Exception('Set your CLIENT_ID and CLIENT_SECRET in exobot/config/.env')
+
         self.API_URL = 'https://osu.ppy.sh/api/v2'
         self.TOKEN_URL = 'https://osu.ppy.sh/oauth/token'
+        self._client_id = client_id
+        self._client_secret = client_secret
 
 
     @staticmethod
@@ -27,8 +32,8 @@ class Osu():
 
     async def get_token(self, scope = 'public'):
         data = {
-            'client_id': env['CLIENT_ID'],
-            'client_secret': env['CLIENT_SECRET'],
+            'client_id': self._client_id,
+            'client_secret': self._client_secret,
             'grant_type': 'client_credentials',
             'scope': scope
         }
@@ -38,6 +43,7 @@ class Osu():
                 results = await response.json()
 
                 return results['access_token']
+
 
     async def _get_data(self, url):
         token = await self.get_token()
@@ -64,4 +70,3 @@ class Osu():
         return User(
             await self._get_data(f'{self.API_URL}/users/{user_id}'),
         )
-
