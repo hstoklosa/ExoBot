@@ -9,6 +9,7 @@ ExoBot is an open-source discord bot, and it's aim is to provide the essential a
   -  Custom Help Command
   -  Info Commands (server, roles, user...)
   -  Fun Commands (meme, rps...)
+  -  Misc Commands (osu/github search)
   -  Ranking System (MySQL)
   -  Poll System (MySQL)
   -  Music Player (looping & queuing)
