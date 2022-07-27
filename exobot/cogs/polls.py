@@ -4,8 +4,8 @@ import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.abspath(os.path.join(dir_path, os.pardir)))
 
-import discord
 import shortuuid
+import discord
 from discord import app_commands, ui
 from discord.ext import commands, menus
 from managers.database import db, cursor

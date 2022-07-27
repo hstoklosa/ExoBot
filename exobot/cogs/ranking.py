@@ -1,4 +1,3 @@
-from re import I
 import sys
 import os
 
@@ -9,7 +8,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from managers.database import db, cursor
-from utils import safe_list_get
+
 
 
 class Ranking(commands.Cog):
