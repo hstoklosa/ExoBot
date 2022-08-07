@@ -1,7 +1,6 @@
 import time
 import os
 
-
 import discord
 import exobot
 from discord.ext import commands
@@ -65,7 +64,7 @@ class Bot(commands.Bot):
                 await self.load_extension(f"exobot.cogs.{fn[:-3]}")
 
         await self.load_extension('jishaku') # debugging cog
-        await self.tree.sync(guild=discord.Object(id=929135361735671889))
+        await self.tree.sync(guild = discord.Object(id = 929135361735671889))
 
 
 

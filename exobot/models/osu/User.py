@@ -129,8 +129,6 @@ class User():
 
     def __init__(self, data):
 
-        # super().__init__(api)
-
         self.avatar_url      =         data.get('avatar_url'     , "")
         self.username        =         data.get('username'       , "")
         self._id             =         data.get('id'        , 0)

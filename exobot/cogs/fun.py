@@ -54,10 +54,10 @@ class Fun(commands.Cog):
     @app_commands.command(name='rps', description='Challange the bot/user to a game of Rock, Paper, Scissors.')
     async def rps(self, ctx):
         print('hello world')
-        # await ctx.response.send_message('Hello World')
+        await ctx.response.send_message('Hello World')
         
-        # view = MyMenu()
-        # await ctx.response.send_message(view=view)
+        view = MyMenu()
+        await ctx.response.send_message(view=view)
 
 
 async def setup(bot):
